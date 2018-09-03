@@ -13,8 +13,10 @@ int main()
 	*block2 = 2.3;
 	printf("Block2 allocated at address: %d\n", block2);
 
-	void* block3 = Malloc(sizeof(4000));
+	void* block3 = Malloc(400);
 	printf("Block3 allocated at address: %d\n", block3);
+
+	Free(block2);
 
 	return 0;
 }

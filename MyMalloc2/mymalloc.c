@@ -26,7 +26,18 @@ void Split(Metadata* block, unsigned int size)
 
 void Merge()
 {
-	// @TODO: implement this
+	Metadata* node = metadataList;
+
+	while (node->next != NULL)
+	{
+		if (node->free == 1 && node->next->free == 1)
+		{
+			node->size = node->size + node->next->size + sizeof(Metadata);
+			node->next = node->next->next;
+		}
+
+		node = node->next;
+	}
 }
 
 void* Malloc(unsigned int size)
@@ -62,7 +73,7 @@ void* Malloc(unsigned int size)
 
 void* Calloc(unsigned int num, unsigned int size)
 {
-	// @TODO: implement this
+	return Malloc(num * size);
 }
 
 void* Realloc(void* block, unsigned int newSize)
@@ -72,5 +83,13 @@ void* Realloc(void* block, unsigned int newSize)
 
 void Free(void* data)
 {
-	// @TODO: implement this
+	if (data < memory && data > memory + MEMORY_SIZE)
+	{
+		printf("Error. Address out of the range.");
+		return;
+	}
+
+	Metadata* node = (Metadata*) data - sizeof(Metadata);
+	node->free = 1;
+	Merge();
 }
