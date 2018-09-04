@@ -78,7 +78,27 @@ void* Calloc(unsigned int num, unsigned int size)
 
 void* Realloc(void* block, unsigned int newSize)
 {
-	// @TODO: implement this
+	if (block == NULL)
+		return Malloc(newSize);
+
+	char* oldBlockAddress = (char*)block;
+
+	Metadata* newBlock = Malloc(newSize);
+	char* newDataAddress = newBlock + sizeof(Metadata);
+	
+	Metadata* oldBlock = (Metadata*)block - sizeof(Metadata);
+
+	int i = 0;
+	for (i = 0; i < oldBlock->size; ++i)
+	{
+		*newDataAddress = *oldBlockAddress;
+		++newDataAddress;
+		++oldBlockAddress;
+	}
+
+	Free(block);
+
+	return newBlock + sizeof(Metadata);
 }
 
 void Free(void* data)
